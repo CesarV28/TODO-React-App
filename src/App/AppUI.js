@@ -10,6 +10,8 @@ import './App.css';
 
 
 function AppUI({
+    loading,
+    loadError,
     totalTodos, 
     completedTodos, 
     searchValue, 
@@ -31,6 +33,9 @@ function AppUI({
         />
 
         <TodoList>
+            {loadError && <p>¡Ups!, parece que hubo un error al cargar.</p>}
+            {loading && <p>Cargando lista...</p>}
+            {(!loading && !searchedTodos.length) && <p>¡Crea un TODO!</p>}
             {searchedTodos.map((todo, index) => (
             <TodoItem
                 key={index}

@@ -10,22 +10,66 @@ import { AppUI } from './AppUI';
 //   { text: 'Configurar VS Code', completed: true },
 // ];
 
-function App() {
+function useLocalStorage (itemName, initialValue) {
 
-    const DB = 'TODOS_RV01'
+  const [ loading, setLoading ] = React.useState(true);
+  const [ loadError, setloadError ] = React.useState(false);
+  const [ item, setItem ] = React.useState(initialValue);
 
-    const localStorageTodos = localStorage.getItem( DB );
+  React.useEffect(() => {
+    setTimeout(() => {
 
-    let parsedTodos;
+      try {
+        const localStorageItem = localStorage.getItem( itemName );
 
-    if(!localStorageTodos){
-      localStorage.setItem( DB, JSON.stringify([]));
-      parsedTodos = [];
-    } else {
-      parsedTodos = JSON.parse(localStorageTodos);
+        let parsedItem;
+
+        if(!localStorageItem){
+          localStorage.setItem( itemName, JSON.stringify(initialValue));
+          parsedItem = initialValue;
+        } else {
+          parsedItem = JSON.parse(localStorageItem);
+        }
+
+        setItem(parsedItem);
+        setLoading(false);
+      } catch (error) {
+        setloadError(error);
+      }
+
+    }, 1000);
+  })
+
+    // Funcion que guarda un nuevo array de todos
+    const saveItem = (newItem) => {
+      try {
+        const stringifiedItem = JSON.stringify(newItem);
+        localStorage.setItem( itemName, stringifiedItem );
+        setItem(newItem);
+      } catch (error) {
+        setloadError(error);
+      }
     }
 
-    const [ todos, setTodos ] = React.useState(parsedTodos);
+    return {
+      item, 
+      saveItem,
+      loading,
+      loadError, 
+  };
+}
+
+function App() {
+
+    const DB = 'TODOS_RV01';
+
+    const {
+      item: todos, 
+      saveItem: saveTodos, 
+      loading,
+      loadError,
+    } = useLocalStorage(DB, []);  
+
     const [ searchValue, setSearchValue ] = React.useState('');
 
     const completedTodos = todos.filter( todo => todo.completed ).length;
@@ -34,7 +78,7 @@ function App() {
     let searchedTodos = [];
     
     if( !searchValue.length > 0){
-        searchedTodos = todos
+        searchedTodos = todos;
     } else{
         searchedTodos = todos.filter(todo => {
           const todoText = todo.text.toLowerCase();
@@ -43,29 +87,26 @@ function App() {
         });
     }
 
-    // Funcion que guarda un nuevo array de todos
-    const saveTodos = (newTodo) => {
-      const stringifiedTodos = JSON.stringify(newTodo);
-      localStorage.setItem( DB, stringifiedTodos );
-      setTodos(newTodo);
-    }
-
     // Funcion que marca como completado o no un TODO y
     // cambia el esatdo de la aplicación
     const completeTodos = (index) => {
-        const newTodos = [...todos]
+        const newTodos = [...todos];
         newTodos[index].completed = !newTodos[index].completed;
-        saveTodos(newTodos)
+        saveTodos(newTodos);
     }
 
     // Funcion que elimina un TODO 
     const deleteTodo = (index) => {
-        const newTodos = [...todos]
-        newTodos.splice(index, 1)
-        saveTodos(newTodos)
+        const newTodos = [...todos];
+        newTodos.splice(index, 1);
+        saveTodos(newTodos);
     }
+
+  // =========== return =========== //
   return (
     <AppUI 
+    loading = {loading}
+    loadError = {loadError}
     totalTodos = {totalTodos}
     completedTodos = {completedTodos}
     searchValue = {searchValue}
