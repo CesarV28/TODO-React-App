@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { TodoContext } from '../TodoContext';
 import { TodoCounter } from '../TodoCounter';
 import { TodoSearch } from '../TodoSearch';
 import { TodoList } from '../TodoList';
@@ -9,28 +10,20 @@ import { CreateTodoButton } from '../CreateTodoButton';
 import './App.css';
 
 
-function AppUI({
-    loading,
-    loadError,
-    totalTodos, 
-    completedTodos, 
-    searchValue, 
-    setSearchValue, 
-    searchedTodos, 
-    completeTodos, 
-    deleteTodo
-}) {
+function AppUI() {
+    
+    const { 
+        loadError, 
+        loading, 
+        searchedTodos, 
+        completeTodos, 
+        deleteTodo 
+    } = React.useContext(TodoContext);
 
     return (
         <React.Fragment>
-        <TodoCounter 
-        total={totalTodos}
-        completed={completedTodos}
-        />
-        <TodoSearch 
-        searchValue = {searchValue}
-        setSearchValue = {setSearchValue}
-        />
+        <TodoCounter />
+        <TodoSearch />
 
         <TodoList>
             {loadError && <p>¡Ups!, parece que hubo un error al cargar.</p>}
