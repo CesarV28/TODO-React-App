@@ -10,6 +10,9 @@ import { Modal } from '../Modal';
 
 import './App.css';
 import { TodoForm } from '../TodoForm';
+import { TodoLoading } from '../TodoLoading';
+import { TodoError } from '../TodoError';
+import { EmptyTodo } from '../EmptyTodo';
 
 
 function AppUI() {
@@ -30,9 +33,9 @@ function AppUI() {
         <TodoSearch />
 
         <TodoList>
-            {loadError && <p>¡Ups!, parece que hubo un error al cargar.</p>}
-            {loading && <p className='TodoList-msg'>Cargando lista...</p>}
-            {(!loading && !searchedTodos.length) && <p className='TodoList-msg'>¡Crea un TODO!</p>}
+            {loadError && <TodoError/>}
+            {loading && <TodoLoading/>}
+            {(!loading && !searchedTodos.length) && <EmptyTodo/>}
             {searchedTodos.map((todo, index) => (
             <TodoItem
                 key={index}
