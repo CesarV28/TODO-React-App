@@ -15,6 +15,7 @@ function TodoProvider(props){
     } = useLocalStorage(DB, []);  
 
     const [ searchValue, setSearchValue ] = React.useState('');
+    const [ openModal, setOpenModal ] = React.useState(false);
 
     const completedTodos = todos.filter( todo => todo.completed ).length;
     const totalTodos = todos.length;
@@ -29,6 +30,15 @@ function TodoProvider(props){
           const searchText = searchValue.toLowerCase();
           return todoText.includes(searchText);
         });
+    }
+
+    const addTodo = (text) => {
+        const newTodos = [...todos];
+        newTodos.push({
+            text,
+            completed: false,
+        })
+        saveTodos(newTodos);
     }
 
     // Funcion que marca como completado o no un TODO y
@@ -51,12 +61,15 @@ function TodoProvider(props){
             loading,
             loadError,
             totalTodos, 
+            addTodo,
             completedTodos, 
             searchValue, 
             setSearchValue, 
             searchedTodos, 
             completeTodos, 
-            deleteTodo
+            deleteTodo,
+            openModal,
+            setOpenModal,
         }}>
             {props.children}
         </TodoContext.Provider>

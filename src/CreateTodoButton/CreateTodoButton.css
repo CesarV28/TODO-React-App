@@ -14,11 +14,12 @@
   align-items: center;
   height: 64px;
   width: 64px;
-
   transform: rotate(0);
   transition: .3s ease;
+  z-index: 100;
 }
 
-.CreateTodoButton:hover {
+.CreateTodoButton.active{
   transform: rotate(224deg);
+  background-color: #d70c0c;
 }
