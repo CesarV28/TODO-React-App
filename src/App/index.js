@@ -48,7 +48,31 @@ function App() {
         />
     </TodoHeader>
 
-    <TodoList>
+    {/* ==== Render prop ==== */}
+    <TodoList
+      loadError = {loadError}
+      loading = {loading}
+      searchedTodos = {searchedTodos}
+      totalTodos = {totalTodos}
+      searchText = {searchValue}
+      onError={() => <TodoError/>}
+      onLoading={() => <TodoLoading/>}
+      onEmptyTodos={() => <EmptyTodo/>}
+      onEmptySearchedTodos={(searchText) => <p>Sin resultados para: {searchText}</p>}
+      render={ todo => (
+        <TodoItem
+            key={todo.text}
+            itemId={todo.text}
+            text={todo.text}
+            completed={todo.completed}
+            onComplete={() => completeTodos(todo.text)}
+            onDelete={() => deleteTodo(todo.text)}
+        />
+      )}
+    />
+
+    {/* ==== Render function ==== */}
+    {/* <TodoList>
         {loadError && <TodoError/>}
         {loading && <TodoLoading/>}
         {(!loading && !searchedTodos.length) && <EmptyTodo/>}
@@ -62,7 +86,7 @@ function App() {
             onDelete={() => deleteTodo(index)}
         />
         ))}
-    </TodoList>
+    </TodoList> */}
 
     {openModal && (
         <Modal>
